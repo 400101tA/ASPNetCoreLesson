@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.Data.Entities;
 using WebApplication1.Models;
@@ -23,18 +24,52 @@ public class UserController : ControllerBase
     public List<UserModel> GetAllUsers()
     {
         var students = _context.Students.ToList();
+
+        var list = _context.Students
+            .Include(student => student.Books)
+            .Where(student => student.Id==1).ToList();
+
+        foreach (var student in list)
+        {
+            Console.WriteLine(student.Name);
+        }
+        
+        students.First().Name = "25-11-23";
+
+        _context.SaveChanges();
         return _userService.GetUsers();
     }
     
     [HttpGet("{userId:int}")]
     public UserModel GetUserById(int userId)
     {
-        var userModel = _userService.GetUsers().FirstOrDefault(model => model.Id==userId);
+        
+        // for (int i = 0; i < 20; i++)
+        // {
+        //     var next = Random.Shared.Next(1, 1000);
+        //     _context.Students.Add(new()
+        //     {
+        //         Name = $"Test Name {next}",
+        //         Books = new List<Book>()
+        //         {
+        //             new Book()
+        //             {
+        //                 Name = "alifbo"
+        //             },
+        //             new Book()
+        //             {
+        //                 Name = "C++"
+        //             }
+        //         }
+        //     });
+        // }
 
-        if (userModel != null)
-            return userModel;
+        var student = _context.Students.First(student => student.Id==1);
 
-        throw new ArgumentException("User not found");
+        _context.Students.Remove(student);
+        
+        _context.SaveChanges();
+        return new UserModel();
     }
 
     [HttpDelete]

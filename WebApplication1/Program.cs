@@ -1,7 +1,5 @@
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
-using WebApplication1.Exceptions;
 using WebApplication1.Middleware;
 using WebApplication1.Services;
 
@@ -10,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<MyDdContext>(optionsBuilder =>
 {
-    optionsBuilder.UseSqlite("Data source=test.db");
+        optionsBuilder.UseSqlite("Data source=test.db");
 });
 
 builder.Services.AddControllers();
@@ -19,7 +17,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<UserService>();
-
 
 var app = builder.Build();
 

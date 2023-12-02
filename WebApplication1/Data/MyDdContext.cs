@@ -7,6 +7,8 @@ public sealed class MyDdContext : DbContext
 {
     public DbSet<Student> Students => Set<Student>();
 
+    public DbSet<Book> Books { get; set; }
+
     public MyDdContext(DbContextOptions contextOptionsBuilder) : base(contextOptionsBuilder)
     {
         Database.EnsureCreated();
@@ -21,6 +23,13 @@ public sealed class MyDdContext : DbContext
             .Property(student => student.Id)
             .ValueGeneratedOnAdd();
 
+        modelBuilder.Entity<Student>()
+            .HasMany<Book>(student => student.Books)
+            .WithOne(book => book.Student)
+            .HasForeignKey(book => book.StudentId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        
         base.OnModelCreating(modelBuilder);
     }
 }
